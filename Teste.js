@@ -66,7 +66,7 @@ console.log(result);
 
 let fruit = ["pomme", "orange", "banane", "citron"]; /*array (tableau)*/
 
-for(let i = 0; i< fruit.length; i++)
+for(let i = 0; i<3 ; i++)
 console.log(fruit[i]);
 
 let myarray = [[0.1],[5,7,8],[12,18]];   
@@ -101,3 +101,23 @@ cat.miolé = function(number)
 };
 
 cat.miolé(5);
+
+function dogs(name, color, age) /*fonctions constructeurs*/
+{
+    this.name = name;
+    this.color = color;
+    this.age = age;
+    this.aboie = function()
+    {
+        console.log("wouaff", this.name);
+    }
+}
+
+let staff = new dogs("hercule", "grey", 4);
+let chiwawa = new dogs("walie", "white", 7);
+
+console.log(staff);
+console.log(chiwawa);
+
+chiwawa.aboie();
+staff.aboie();
