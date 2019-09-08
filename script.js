@@ -6,6 +6,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
     let ctx;
     let delay = 100;
     let snakee;
+    let applee;
 
     init();
 
@@ -19,6 +20,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         document.body.appendChild(canvas); /*Appelation du canvas dans le body*/
         ctx = canvas.getContext('2d');/* variable pour le contexte de notre canvas '2d'*/
         snakee = new Snake([[6,4], [5,4], [4,4]], "right");
+        applee = new Apple([10,10]);
         refreshCanvas();
     }
 
@@ -29,6 +31,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
         snakee.advance();
         snakee.draw();
+        applee.draw();
         setTimeout(refreshCanvas, delay);/* pour refresh une fonction après un délai passé */
     }
 
@@ -99,6 +102,23 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
                 this.direction = newDirection;
             }
         };
+    }
+
+    function Apple(position)
+    {
+        this.position = position;
+        this.draw = function()
+        {
+            ctx.save();
+            ctx.fillStyle = "#33cc33";
+            ctx.beginPath();
+            let radius = blockSize/2;
+            let x = position[0]*blockSize + radius;
+            let y = position[1]*blockSize + radius;
+            ctx.arc(x, y, radius, 0, Math.PI*2, true);
+            ctx.fill();
+            ctx.restore();
+        }
     }
 
     document.onkeydown = function handleKeyDown(e)
