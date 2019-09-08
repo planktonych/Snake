@@ -75,7 +75,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         let centerY = canvasHeight / 2;
         ctx.strokeText("Game Over", centreX, centerY -180);
         ctx.fillText("Game Over", centreX, centerY -180);
-        ctx.font = "bold 30px sans-serif";
+        ctx.font = "bold 50px sans-serif";
         ctx.strokeText("Press the Space Key to replay", centreX, centerY - 120);
         ctx.fillText("Press the Space Key to replay", centreX, centerY - 120);
         ctx.restore();
