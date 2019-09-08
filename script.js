@@ -7,6 +7,8 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
     let delay = 100;
     let snakee;
     let applee;
+    let widthInBlocks = canvasWidth/blockSize;
+    let heightInBlocks = canvasHeight/blockSize;
 
     init();
 
@@ -26,13 +28,21 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
 
     function refreshCanvas()
     {
-        ctx.clearRect(0,0,canvasWidth,canvasHeight);/* pour effacer une zone que l'on souhaite */
-        /*ctx.fillRect(xCoord, yCoord, 100, 50); les deux premières valeurs sont le positionnement horizontal et vertical.
-            Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
+        
         snakee.advance();
-        snakee.draw();
-        applee.draw();
-        setTimeout(refreshCanvas, delay);/* pour refresh une fonction après un délai passé */
+        if(snakee.checkCollision())
+        {
+            //GAME OVER
+        }
+        else
+        {
+            ctx.clearRect(0,0,canvasWidth,canvasHeight);/* pour effacer une zone que l'on souhaite */
+            /*ctx.fillRect(xCoord, yCoord, 100, 50); les deux premières valeurs sont le positionnement horizontal et vertical.
+            Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
+            snakee.draw();
+            applee.draw();
+            setTimeout(refreshCanvas, delay);/* pour refresh une fonction après un délai passé */
+        }
     }
 
     function drawBlock(ctx, position)
@@ -101,6 +111,36 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             {
                 this.direction = newDirection;
             }
+        };
+        this.checkCollision = function()
+        {
+            let wallCollision = false;
+            let snakeCollision = false;
+            let head = this.body[0];
+            let rest = this.body.slice(1);
+            let snakeX = head[0];
+            let snakeY = head[1];
+            let minX = 0;
+            let minY = 0;
+            let maxX = widthInBlocks - 1;
+            let maxY = heightInBlocks -1;
+            let isNoteBetweenHorizontalWalls = snakeX < minX || snakeX > maxX;
+            let isNoteBetweenVerticalwalls = snakeY < minY || snakeY > maxY;
+
+            if(isNoteBetweenHorizontalWalls || isNoteBetweenVerticalwalls)
+            {
+                wallCollision = true;
+            }
+
+            for(let i = 0; i < rest.length; i++)
+            {
+                if(snakeX === rest[i][0] && snakeY === rest[i][1] )
+                {
+                    snakeCollision = true;
+                }
+            }
+
+            return wallCollision || snakeCollision;
         };
     }
 
