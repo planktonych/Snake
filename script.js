@@ -9,6 +9,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
     let applee;
     let widthInBlocks = canvasWidth/blockSize;
     let heightInBlocks = canvasHeight/blockSize;
+    let score;
 
     init();
 
@@ -18,11 +19,15 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         let canvas = document.createElement('canvas'); /*fonction canvas pour faire apparaitre une zone interactive (déssin) sur son HTML.*/
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        canvas.style.border = "2px solid";
+        canvas.style.border = "30px outset rgb(150,150,150)";
+        canvas.style.margin = "50px auto";
+        canvas.style.display = "block";
+        canvas.style.backgroundColor = "#bbd2e1";
         document.body.appendChild(canvas); /*Appelation du canvas dans le body*/
         ctx = canvas.getContext('2d');/* variable pour le contexte de notre canvas '2d'*/
-        snakee = new Snake([[6,4], [5,4], [4,4]], "right");
+        snakee = new Snake([[6,4], [5,4], [4,4], [3,4]], "right");
         applee = new Apple([10,10]);
+        score = 0;
         refreshCanvas();
     }
 
@@ -32,12 +37,13 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         snakee.advance();
         if(snakee.checkCollision())
         {
-            //GAME OVER
+            gameOver();
         }
         else
         {
             if(snakee.isEatingApple(applee))
             {
+                score++;
                 snakee.ateApple = true;
                 do
                 {
@@ -49,10 +55,51 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             ctx.clearRect(0,0,canvasWidth,canvasHeight);/* pour effacer une zone que l'on souhaite */
             /*ctx.fillRect(xCoord, yCoord, 100, 50); les deux premières valeurs sont le positionnement horizontal et vertical.
             Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
+            drawScore();
             snakee.draw();
             applee.draw();
             setTimeout(refreshCanvas, delay);/* pour refresh une fonction après un délai passé */
         }
+    }
+    
+    function gameOver()
+    {
+        ctx.save();
+        ctx.font = "bold 70px sans-serif";
+        ctx.fillStyle = "rgba(210,0,0,.9)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 5;
+        let centreX = canvasWidth / 2;
+        let centerY = canvasHeight / 2;
+        ctx.strokeText("Game Over", centreX, centerY -180);
+        ctx.fillText("Game Over", centreX, centerY -180);
+        ctx.font = "bold 30px sans-serif";
+        ctx.strokeText("Press the Space Key to replay", centreX, centerY - 120);
+        ctx.fillText("Press the Space Key to replay", centreX, centerY - 120);
+        ctx.restore();
+    }
+
+    function restart()
+    {
+        snakee = new Snake([[6, 4], [5, 4], [4, 4], [3, 4]], "right");
+        applee = new Apple([10, 10]);
+        score = 0;
+        refreshCanvas();
+    }
+
+    function drawScore()
+    {
+        ctx.save();
+        ctx.font = "bold 200px sans-serif";
+        ctx.fillStyle = "rgba(0,0,0,.7)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        let centreX = canvasWidth /2;
+        let centerY = canvasHeight /2;
+        ctx.fillText(score.toString(), centreX, centerY);
+        ctx.restore();
     }
 
     function drawBlock(ctx, position)
@@ -61,7 +108,6 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         let y = position[1] * blockSize;
         ctx.fillRect(x, y, blockSize, blockSize);/* les deux premières valeurs sont le positionnement horizontal et vertical.
         Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
-
     }
 
     function Snake(body, direction)
@@ -79,6 +125,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             }
             ctx.restore();
         };
+
         this.advance= function()
         {
             let nextPosition = this.body[0].slice();
@@ -105,6 +152,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             else
                 this.ateApple = false;
         };
+
         this.setDirection = function(newDirection)
         {
             let allowedDirection;
@@ -126,6 +174,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
                 this.direction = newDirection;
             }
         };
+
         this.checkCollision = function()
         {
             let wallCollision = false;
@@ -182,12 +231,14 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             ctx.fill();
             ctx.restore();
         };
+
         this.setNewPosition = function()
         {
             let newX = Math.round(Math.random() * (widthInBlocks - 1));
             let newY = Math.round(Math.random() * (heightInBlocks - 1));
             this.position = [newX, newY];
         };
+
         this.isOnSnake = function(snakeToCheck)
         {
             let isOnSnake = false;
@@ -221,10 +272,13 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             case 40:
                 newDirection = "down";
                 break;
+            case 32:
+                restart();
+                return;
             default:
                 return;
 
-        }
+        };
     snakee.setDirection(newDirection);
     }
 }
