@@ -36,6 +36,16 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         }
         else
         {
+            if(snakee.isEatingApple(applee))
+            {
+                snakee.ateApple = true;
+                do
+                {
+                    applee.setNewPosition();
+                }
+                while(applee.isOnSnake(snakee));
+            }
+
             ctx.clearRect(0,0,canvasWidth,canvasHeight);/* pour effacer une zone que l'on souhaite */
             /*ctx.fillRect(xCoord, yCoord, 100, 50); les deux premières valeurs sont le positionnement horizontal et vertical.
             Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
@@ -58,10 +68,11 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
     {
         this.body = body;
         this.direction = direction;
+        this.ateApple = false;
         this.draw = function()
         {
             ctx.save();
-            ctx.fillStyle = "#ff0000";
+            ctx.fillStyle = "#33cc33";
             for(let i = 0; i < this.body.length; i++)
             {
                 drawBlock(ctx, this.body[i]);
@@ -89,7 +100,10 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
                     throw("Invalid Direction");
             }
             this.body.unshift(nextPosition);
-            this.body.pop()
+            if(!this.ateApple)
+                this.body.pop();
+            else
+                this.ateApple = false;
         };
         this.setDirection = function(newDirection)
         {
@@ -142,6 +156,15 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
 
             return wallCollision || snakeCollision;
         };
+
+        this.isEatingApple = function(appleToEat)
+        {
+            let head = this.body[0];
+            if(head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1])
+                return true;
+            else
+                return false;
+        };
     }
 
     function Apple(position)
@@ -150,15 +173,34 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         this.draw = function()
         {
             ctx.save();
-            ctx.fillStyle = "#33cc33";
+            ctx.fillStyle = "#ff0000";
             ctx.beginPath();
             let radius = blockSize/2;
-            let x = position[0]*blockSize + radius;
-            let y = position[1]*blockSize + radius;
+            let x = this.position[0]*blockSize + radius;
+            let y = this.position[1]*blockSize + radius;
             ctx.arc(x, y, radius, 0, Math.PI*2, true);
             ctx.fill();
             ctx.restore();
-        }
+        };
+        this.setNewPosition = function()
+        {
+            let newX = Math.round(Math.random() * (widthInBlocks - 1));
+            let newY = Math.round(Math.random() * (heightInBlocks - 1));
+            this.position = [newX, newY];
+        };
+        this.isOnSnake = function(snakeToCheck)
+        {
+            let isOnSnake = false;
+
+            for(let i = 0 ; i < snakeToCheck.body.length; i++)
+            {
+                if(this.position[0] === snakeToCheck.body[i][0] && this.position[1] === snakeToCheck.body[i][1])
+                {
+                    isOnSnake = true;
+                }
+            }
+            return isOnSnake;
+        };
     }
 
     document.onkeydown = function handleKeyDown(e)
