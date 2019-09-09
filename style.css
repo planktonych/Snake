@@ -1,0 +1,27 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+body
+{
+    background: url('fond1.png') no-repeat;
+    background-size: cover;
+}
+
+
+
+.img-animation-footer
+{
+    display: block;
+    animation: 20s linear 0s infinite reverse move-eye;
+    text-align:left;
+    height: 7rem;
+    overflow: hidden;
+}
+
+@keyframes move-eye 
+{ 
+    from { margin-left:-20%; } to { margin-left:100%; }  
+}
