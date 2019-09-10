@@ -16,12 +16,11 @@ body
 {
     display: block;
     animation: 20s linear 0s infinite reverse move-eye;
-    text-align:left;
     height: 7rem;
     overflow: hidden;
 }
 
 @keyframes move-eye 
 { 
-    from { margin-left:-20%; } to { margin-left:100%; }  
+    from { margin-left:0%; } to { margin-left:92%; }  
 }
