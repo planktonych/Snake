@@ -18,10 +18,11 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         let canvas = document.createElement('canvas'); /*fonction canvas pour faire apparaitre une zone interactive (déssin) sur son HTML.*/
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        canvas.style.border = "30px outset rgb(150,150,150)";
-        canvas.style.margin = "50px auto";
+        canvas.style.border = "30px outset rgba(0,0,0,.8)";
+        canvas.style.boxShadow = " 0px 0px 0px black, 0 0 3em rgb(0,0,250), 0 0 3em rgb(0,0,250)";
+        canvas.style.margin = "0 auto";
         canvas.style.display = "block";
-        canvas.style.backgroundColor = "#bbd2e1";
+        canvas.style.backgroundColor = "rgba(0, 150, 200,.8)";
         document.body.appendChild(canvas); /*Appelation du canvas dans le body*/
         ctx = canvas.getContext('2d'); /* variable pour le contexte de notre canvas '2d'*/
         snakee = new Snake([

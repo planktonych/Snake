@@ -1,26 +1,35 @@
-*
-{
+* {
     margin: 0;
     padding: 0;
 }
 
-body
-{
-    background: url('fond1.jpg') no-repeat;
+body {
+    background: url('Pictures/fond1.jpg') no-repeat;
     background-size: cover;
 }
 
-
-
-.img-animation-footer
-{
+.img-animation-footer {
     display: block;
-    animation: 20s linear 0s infinite reverse move-eye;
+    animation: 10s linear 0s infinite alternate move-eye;
     height: 7rem;
     overflow: hidden;
 }
 
-@keyframes move-eye 
-{ 
-    from { margin-left:0%; } to { margin-left:92%; }  
+@keyframes move-eye {
+    from {
+        margin-left: 22%;
+    }
+
+    to {
+        margin-left: 70%;
+    }
+}
+
+.contact-footer {
+    text-align: end;
+}
+
+.p-footer {
+    text-align: end;
+    font-size: 1.2rem;
 }
