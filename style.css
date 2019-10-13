@@ -25,11 +25,11 @@ body {
     }
 }
 
-.contact-footer {
+.contact {
     text-align: end;
 }
 
-.p-footer {
+p {
     text-align: end;
     font-size: 1.2rem;
 }
