@@ -4,7 +4,7 @@
 }
 
 body {
-    background: url('Pictures/fond1.jpg') no-repeat;
+    background: url('Pictures/background.jpg') no-repeat;
     background-size: cover;
 }
 
@@ -18,10 +18,12 @@ body {
 @keyframes move-eye {
     from {
         margin-left: 22%;
+        transform: scaleX(1);
     }
 
     to {
         margin-left: 70%;
+        transform: scaleX(-1);
     }
 }
 

@@ -1,38 +1,49 @@
 window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'ouverture de la page html.*/ {
     let canvasWidth = 900;
-    let canvasHeight = 600;
-    let blockSize = 30
+    let canvasHeight = 540;
+    let blockSize = 60;
     let ctx;
-    let delay = 100;
+    let delay = 200;
     let snakee;
     let applee;
     let widthInBlocks = canvasWidth / blockSize;
     let heightInBlocks = canvasHeight / blockSize;
     let score;
     let timeout;
+    let imageSnakeBlock;
+    let imageApple;
+    const initApplePos = [5, 5];
 
     init();
 
     function init() {
 
-        let canvas = document.createElement('canvas'); /*fonction canvas pour faire apparaitre une zone interactive (déssin) sur son HTML.*/
+        let canvas = document.createElement('canvas');
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        canvas.style.border = "30px outset rgba(0,0,0,.8)";
-        canvas.style.boxShadow = " 0px 0px 0px black, 0 0 3em rgb(0,0,250), 0 0 3em rgb(0,0,250)";
+        canvas.style.border = "30px outset rgba(0,0,0,.8)";        
         canvas.style.margin = "0 auto";
         canvas.style.display = "block";
-        canvas.style.backgroundColor = "rgba(0, 150, 200,.8)";
-        document.body.appendChild(canvas); /*Appelation du canvas dans le body*/
-        ctx = canvas.getContext('2d'); /* variable pour le contexte de notre canvas '2d'*/
+        canvas.style.backgroundColor = "rgba(50, 50, 50, .5)";
+        document.body.appendChild(canvas); 
+        ctx = canvas.getContext('2d'); 
         snakee = new Snake([
             [6, 4],
             [5, 4],
             [4, 4],
             [3, 4]
         ], "right");
-        applee = new Apple([10, 10]);
+        applee = new Apple(initApplePos);
         score = 0;
+        //load from image url
+        imageSnakeBlockMiddle = new Image();
+        imageSnakeBlockMiddle.src = "Pictures/SnakeMiddle.png";
+        imageSnakeBlockHead = new Image();
+        imageSnakeBlockHead.src = "Pictures/SnakeHead.png";
+        imageSnakeBlockTail = new Image();
+        imageSnakeBlockTail.src = "Pictures/SnakeTail.png";
+        imageApple = new Image();
+        imageApple.src = "Pictures/apple.png";
         refreshCanvas();
     }
 
@@ -51,9 +62,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
                 while (applee.isOnSnake(snakee));
             }
 
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight); /* pour effacer une zone que l'on souhaite */
-            /*ctx.fillRect(xCoord, yCoord, 100, 50); les deux premières valeurs sont le positionnement horizontal et vertical.
-            Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
             drawScore();
             snakee.draw();
             applee.draw();
@@ -64,18 +73,20 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
     function gameOver() {
         ctx.save();
         ctx.font = "bold 70px sans-serif";
-        ctx.fillStyle = "rgba(210,0,0,.9)";
+        ctx.fillStyle = "rgba(210,210,210,.9)";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.strokeStyle = "black";
         ctx.lineWidth = 5;
         let centreX = canvasWidth / 2;
         let centerY = canvasHeight / 2;
-        ctx.strokeText("Game Over", centreX, centerY - 180);
-        ctx.fillText("Game Over", centreX, centerY - 180);
+        const gameOverText = "Рыба!";
+        ctx.strokeText(gameOverText, centreX, centerY - 180);
+        ctx.fillText(gameOverText, centreX, centerY - 180);
         ctx.font = "bold 50px sans-serif";
-        ctx.strokeText("Press the Space Key to replay", centreX, centerY - 120);
-        ctx.fillText("Press the Space Key to replay", centreX, centerY - 120);
+        const repeatText = "Пробел - еще по одной";
+        ctx.strokeText(repeatText, centreX, centerY - 120);
+        ctx.fillText(repeatText, centreX, centerY - 120);
         ctx.restore();
     }
 
@@ -86,7 +97,7 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
             [4, 4],
             [3, 4]
         ], "right");
-        applee = new Apple([10, 10]);
+        applee = new Apple(initApplePos);
         score = 0;
         clearTimeout(timeout);
         refreshCanvas();
@@ -104,12 +115,31 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         ctx.restore();
     }
 
-    function drawBlock(ctx, position) {
+    function drawBlock(ctx, position, blockType, angle) {
+        angle -= Math.PI / 2;
         let x = position[0] * blockSize;
         let y = position[1] * blockSize;
-        ctx.fillRect(x, y, blockSize, blockSize);
-        /* les deux premières valeurs sont le positionnement horizontal et vertical.
-                Les deux autres sont la dimension de notre dessin comme là un rectangle de 100 px sur 50 px.*/
+        let imageSnakeBlock;
+        switch (blockType) {
+            case "head":
+                imageSnakeBlock = imageSnakeBlockHead;
+                break;
+            case "tail":
+                imageSnakeBlock = imageSnakeBlockTail;
+                break;
+            default:
+                imageSnakeBlock = imageSnakeBlockMiddle;
+        }
+
+        console.log(angle);
+        ctx.save();
+        ctx.translate(x + blockSize / 2, y + blockSize / 2);
+        ctx.rotate(angle);
+        ctx.translate(-(x + blockSize / 2), -(y + blockSize / 2));
+        ctx.drawImage(imageSnakeBlock, x , y, blockSize, blockSize);
+        ctx.restore();                
+        
+                
     }
 
     function Snake(body, direction) {
@@ -118,9 +148,50 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         this.ateApple = false;
         this.draw = function () {
             ctx.save();
-            ctx.fillStyle = "#33cc33";
+            ctx.fillStyle = "#ffcc33";
             for (let i = 0; i < this.body.length; i++) {
-                drawBlock(ctx, this.body[i]);
+                let blockType;
+                if (i === 0) {
+                    blockType = "head";
+                } else if (i === this.body.length - 1) {
+                    blockType = "tail";
+                } else {
+                    blockType = "middle";
+                }
+                let angle = 0;
+                if (i > 0) {
+                    let previousBlock = this.body[i - 1];
+                    let currentBlock = this.body[i];
+                    if (previousBlock[0] === currentBlock[0] && previousBlock[1] < currentBlock[1]) {
+                        angle = Math.PI / 2;
+                    } else if (previousBlock[0] === currentBlock[0] && previousBlock[1] > currentBlock[1]) {
+                        angle = -Math.PI / 2;
+                    } else if (previousBlock[0] < currentBlock[0] && previousBlock[1] === currentBlock[1]) {
+                        angle = 0;
+                    } else if (previousBlock[0] > currentBlock[0] && previousBlock[1] === currentBlock[1]) {
+                        angle = Math.PI;
+                    } 
+                }
+                else {
+                    switch (this.direction) {
+                        case "left":
+                            angle = 0;
+                            break;
+                        case "right":
+                            angle = Math.PI;
+                            break;
+                        case "down":
+                            angle = -Math.PI / 2;
+                            break;
+                        case "up":
+                            angle = Math.PI / 2;
+                            break;
+                        default:
+                            throw ("Invalid Direction");
+                    }
+                }
+
+                drawBlock(ctx, this.body[i], blockType, angle);
             }
             ctx.restore();
         };
@@ -210,12 +281,10 @@ window.onload = function () /*fonction d'affichage de la fenêtre de jeux à l'o
         this.draw = function () {
             ctx.save();
             ctx.fillStyle = "#ff0000";
-            ctx.beginPath();
-            let radius = blockSize / 2;
-            let x = this.position[0] * blockSize + radius;
-            let y = this.position[1] * blockSize + radius;
-            ctx.arc(x, y, radius, 0, Math.PI * 2, true);
-            ctx.fill();
+            ctx.beginPath();            
+            let x = this.position[0] * blockSize;
+            let y = this.position[1] * blockSize;
+            ctx.drawImage(imageApple, x, y, blockSize, blockSize);                        
             ctx.restore();
         };
 
