@@ -1,7 +1,10 @@
-# Snake-javascript
- 
-This game was made as part of a Udemy training exercise.
+# Змейка по мотивам мемасов из стримов Шепелина и Захарова.
 
-![50% center](https://github.com/Gyumao/Snake-javascript/blob/master/Pictures/Capture%20d%E2%80%99%C3%A9cran%20de%202019-11-07%2000-09-29.png)
+## Фичи:
+- Деды
+- Карбюратор
+- Планктоныч
+- Запотевшая
+- Волга
 
-![50% center](https://github.com/Gyumao/Snake-javascript/blob/master/Pictures/Capture%20d%E2%80%99%C3%A9cran%20de%202019-11-07%2000-09-22.png)
+Пишите предложения в Issues, подключайтесь, шлите PR
